@@ -5,6 +5,7 @@
 #include <iostream>
 #include <limits>
 #include <ostream>
+#include <random>
 #include <vector>
 
 using namespace std;
@@ -81,7 +82,7 @@ Result maxSumRecursive(vector<int>& arr, int left, int right) {
 
     int maxRightBorderSum = numeric_limits<int>::min();
     int rightBorderSum = 0;
-    for (int j = center; j <= right; ++j) {
+    for (int j = center+1; j <= right; ++j) {
         rightBorderSum += arr[j];
         if (rightBorderSum > maxRightBorderSum) {
             maxRightBorderSum = rightBorderSum;
@@ -129,12 +130,20 @@ Result maxSumDP(vector<int>& arr) {
 
 // Driver code
 int main() {
-    vector<int> positives(1000);
-    vector<int> negatives(1000);
+    std::random_device rd_1;
+    std::mt19937 gen_1(rd_1());
+    
+    std::random_device rd_2;
+    std::mt19937 gen_2(rd_2());
+    
+    std::uniform_int_distribution<> distrib_1(-100,100);
+
+    vector<int> positives(100);
+    vector<int> negatives(100);
 
     for (int i = 0; i < positives.size(); ++i) {
-        positives[i] = rand() % 10000;
-        negatives[i] = (rand() % 10000) * -1;
+        positives[i] = distrib_1(gen_1);
+        negatives[i] = distrib_1(gen_2);
     }
 
     Result resPositive, resNegative;
@@ -147,7 +156,9 @@ int main() {
     resNegative = maxSum3Loops(negatives);
     end = chrono::high_resolution_clock::now();
     elapsed = end - start;
-    std::cout << "\nTime taken (Algorithm #1): " << elapsed.count() * 1000 << "\tmiliseconds" << std::endl;
+    std::cout << "\nTime taken (Algorithm #1): " << elapsed.count() * 1000 << " miliseconds" << std::endl;
+    std::cout << "Positive max: " << resPositive.maxSum << " (" << resPositive.left << ", " << resPositive.right << ")" << std::endl;
+    std::cout << "Negative max: " << resNegative.maxSum << " (" << resNegative.left << ", " << resNegative.right << ")" << std::endl;
 
 
     start = chrono::high_resolution_clock::now();
@@ -155,21 +166,27 @@ int main() {
     resNegative = maxSum2Loops(negatives);
     end = chrono::high_resolution_clock::now();
     elapsed = end - start;
-    std::cout << "Time taken (Algorithm #2): " << elapsed.count() * 1000 << "\tmiliseconds" << std::endl;
+    std::cout << "\nTime taken (Algorithm #2): " << elapsed.count() * 1000 << " miliseconds" << std::endl;
+    std::cout << "Positive max: " << resPositive.maxSum << " (" << resPositive.left << ", " << resPositive.right << ")" << std::endl;
+    std::cout << "Negative max: " << resNegative.maxSum << " (" << resNegative.left << ", " << resNegative.right << ")" << std::endl;
     
     start = chrono::high_resolution_clock::now();
     resPositive = maxSumRecursive(positives, 0, positives.size()-1);
     resNegative = maxSumRecursive(negatives, 0, negatives.size()-1);
     end = chrono::high_resolution_clock::now();
     elapsed = end - start;
-    std::cout << "Time taken (Algorithm #3): " << elapsed.count() * 1000 << "\tmiliseconds" << std::endl;
+    std::cout << "\nTime taken (Algorithm #3): " << elapsed.count() * 1000 << " miliseconds" << std::endl;
+    std::cout << "Positive max: " << resPositive.maxSum << " (" << resPositive.left << ", " << resPositive.right << ")" << std::endl;
+    std::cout << "Negative max: " << resNegative.maxSum << " (" << resNegative.left << ", " << resNegative.right << ")" << std::endl;
     
     start = chrono::high_resolution_clock::now();
     resPositive = maxSumDP(positives);
     resNegative = maxSumDP(negatives);
     end = chrono::high_resolution_clock::now();
     elapsed = end - start;
-    std::cout << "Time taken (Algorithm #4): " << elapsed.count() * 1000 << "\tmiliseconds" << std::endl;
+    std::cout << "\nTime taken (Algorithm #4): " << elapsed.count() * 1000 << " miliseconds" << std::endl;
+    std::cout << "Positive max: " << resPositive.maxSum << " (" << resPositive.left << ", " << resPositive.right << ")" << std::endl;
+    std::cout << "Negative max: " << resNegative.maxSum << " (" << resNegative.left << ", " << resNegative.right << ")" << std::endl;
     
     return 0;
 }
